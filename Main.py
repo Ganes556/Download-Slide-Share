@@ -1,9 +1,16 @@
+# requests 
+import requests
+
+# tkinter 
+from tkinter import *
+import tkinter as tk
+from tkinter import filedialog,messagebox
+
+# selenium 
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
-import requests
-import tkinter as tk
-from tkinter import *
-from tkinter import filedialog,messagebox
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+# pharse path 
 from pathlib import Path
 
 # waiting a link text appears 
@@ -45,12 +52,16 @@ def browse():
 
 def download():
     try:
-        driver = webdriver.PhantomJS(executable_path=(str(Path.cwd())+r"\phantomjs-2.1.1-windows\bin\phantomjs.exe"))
+        # driver = webdriver.PhantomJS(executable_path=(str(Path.cwd())+r"\phantomjs-2.1.1-windows\bin\phantomjs.exe"))
+        caps = DesiredCapabilities.PHANTOMJS 
+        caps["phantomjs.page.settings.userAgent"] = ""
+        driver = webdriver.PhantomJS(desired_capabilities=caps)
+        
     except Exception as e: 
-        messagebox.showerror(e,"Please Download PhanthomJS & setting environment for Support this Script !")
-    # https://www.slideshare.net/secret/rMQvaTumPTtSiM
+        messagebox.showerror(e,"Please Dont Delete, File Name PhantomJS !")
+    # https://www.slideshare.net/secret/rMQvaTumPTtSiM --> contoh link 
     driver.get(f'https://simply-debrid.com/generate?link="{slideShareLink.get()}#submit2"')
-
+    
     # pakai lambda karna webdriver hanya bisa membaca sebuah objek tidak bisa membaca sebuah fungsi
         # alternatifnya pakai class, karna class itu object
             # class link_text(object):
@@ -63,15 +74,13 @@ def download():
             #         else:
             #             return locator
             # linkPdf = WebDriverWait(driver,1).until(link_text("Generation in progress..."))
-
-    linkPdf = WebDriverWait(driver,1).until(lambda x: linkText(driver,"Generation in progress...")) 
     
-   
-
+    linkPdf = WebDriverWait(driver,1).until(lambda x: linkText(driver,"Generation in progress...")) 
+    print(linkPdf)
     driver.close()
-
     # url link
     url = linkPdf
+    
     # capture name file 
     if url.find("/"):
         nameFile = url.rsplit("/",1)[1]
@@ -108,7 +117,6 @@ if __name__ == "__main__":
     # berguna untuk get and set isinya di setiap fungsi yang berbeda
     slideShareLink = StringVar()
     downloadPath = StringVar()
-
 
     widgets()
     root.mainloop()
